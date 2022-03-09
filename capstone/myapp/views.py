@@ -87,8 +87,6 @@ def api_home(request):
     'city':'Chico',
     'categories':'bars'
   }
-
-  api_url = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJ2wcRw7Eng4ARd5aaINoMauo&key=AIzaSyBFFYehMjvY9-PEk7Pz8KkkKYV4C3pBNqU'
   response=requests.get(url=SEARCH_API_URL, params=PARAMETERS, headers=HEADERS).json()
   total =  len(response['businesses'])
   for num in range(1, total+1):
