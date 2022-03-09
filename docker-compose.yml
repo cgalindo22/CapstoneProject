@@ -5,7 +5,7 @@ services:
   web:
     build: .
     volumes:
-       - .:/code
+        - .:/code
     ports:
        - 8000:8000
-    command: python /code/mysite/manage.py runserver 0.0.0.0:8000
+    command: python /code/capstone/manage.py runserver 0.0.0.0:8000
