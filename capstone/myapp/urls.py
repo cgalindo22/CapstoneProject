@@ -8,6 +8,8 @@ urlpatterns = [
   path('register/', views.register),
   path('logout/', views.logout_view),
   path('comments/', views.get_comments),
-  path('api/', views.api_home),
+  path('test/', views.comment_test),
+  path('profile/', views.profile, name='profile'),
+  path('edit_profile/', views.UserEditView.as_view()),
   #path('/nextpage', views.nextpage)
 ]

@@ -1,6 +1,6 @@
 from django import forms
 from django.core.validators import validate_slug
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
 
 from . import models
@@ -39,7 +39,7 @@ class RegForm(UserCreationForm):
 
   class Meta:
     model = User
-    fields = ("username", "email",
+    fields = ("first_name", "last_name", "username", "email",
               "password1", "password2")
 
   def save(self, commit=True):
@@ -48,3 +48,27 @@ class RegForm(UserCreationForm):
     if commit:
       user.save()
     return user
+
+class UpdateUserForm(forms.ModelForm):
+    username = forms.CharField(max_length=100,
+                               required=True,
+                               widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(required=True,
+                             widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+
+
+class UpdateProfileForm(UserChangeForm):
+    # avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control'}))
+    first_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    # bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+
+    class Meta:
+        model = models.Profile
+        fields = ['email', 'first_name', 'last_name']
+

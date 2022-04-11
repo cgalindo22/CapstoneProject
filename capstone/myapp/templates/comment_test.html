@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+
+
+<div class="container-fluid">
+  <div id="app-2">
+    <div class="accordion" id="accordionExample">
+      <div class="card">
+        <div class="card-header" id="headingOne">
+          <h2 class="mb-0">
+            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              Collapsible Group Item #1
+            </button>
+          </h2>
+        </div>
+    
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+          <div class="card-body">
+            Some placeholder content for the first accordion panel. This panel is shown by default, thanks to the <code>.show</code> class.
+          </div>
+        </div>
+      </div>
+  </div>
+  <div id="app-4">
+    <ul>
+      <li v-for="com in comments">
+        {% verbatim %}
+        <p>{{ com.comment }} - {{ com.author }}</p>
+        <ul>
+          <li v-for="rep in com.replies">
+            <p>{{ rep.reply }} - {{ rep.author }}</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+        {% endverbatim %}
+{% if request.user.is_authenticated %}
+  <form action="/" method="post">
+    {% csrf_token %} 
+    {{ form }}
+    <input class="btn btn-primary" type="submit" value="Add Comment"/>
+  </form>
+</div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="{% static "js/myvue.js" %}"></script>
+{% endblock %}

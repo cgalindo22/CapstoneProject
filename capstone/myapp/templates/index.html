@@ -2,54 +2,64 @@
 {% load static %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-
-
-
-<div class="container-fluid">
-  <div id="app-2">
-    <div class="accordion" id="accordionExample">
-      <div class="card">
-        <div class="card-header" id="headingOne">
-          <h2 class="mb-0">
-            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-              Collapsible Group Item #1
-            </button>
-          </h2>
-        </div>
-    
-        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-          <div class="card-body">
-            Some placeholder content for the first accordion panel. This panel is shown by default, thanks to the <code>.show</code> class.
-          </div>
+<header class="masthead">
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <div class="row h-100 align-items-center">
+        <div class="col-12 text-center">
+          <h1 class="text-light">Restaurants</h1>
+          <p class="text-light">Find restaurant details below.</p>
+          <!-- <p class="lead">A great stakrter layout for a landing page</p> -->
         </div>
       </div>
+    </div>  
   </div>
-  <div id="app-4">
-    <ul>
-      <li v-for="com in comments">
-        {% verbatim %}
-        <p>{{ com.comment }} - {{ com.author }}</p>
-        <ul>
-          <li v-for="rep in com.replies">
-            <p>{{ rep.reply }} - {{ rep.author }}</p>
-          </li>
-        </ul>
-      </li>
-    </ul>
+</header>
+<div class="container-fluid">
+
+  <h2 class="text-center"></h2>
+  {% for i in response_q %}
+  <div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+      <div class="card-header" id="heading{{ forloop.counter }}">
+        <h2 class="accordion-header">
+          <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter }}">
+            {{ i.name }}
+            <span class="text-right">
+              <!-- {{ i.rating }}
+              {{ i.price }} -->
+            </span>
+          </button>
+        </h2>
+      </div>
+      <div id="collapse{{ forloop.counter }}" class="collapse" aria-labelledby="heading{{ forloop.counter }}" data-parent="#accordionExample">
+        <div class="card-body">
+          
+          <p> <strong>Location:</strong>
+            {{ i.location.formatted_address }}
+            {% if i.display_phone.strip %}
+              <strong> Phone:</strong>
+                {{ i.display_phone }}
+            {% endif %}
+          </p>
+          <strong> Open:</strong>
+          <!-- Day of the week -->
+          
+          <!-- start open hours-->
+          <table>
+          {% for hr in i.hours %}
+            {% for open in hr.open %}
+              {% cycle '<tr>' '' %}
+                <td>{{ open.day }}</td>
+                <td>{{ open.start }} - {{ open.end }}</td>
+              {% cycle '</tr>' '' %}
+            {% endfor %}
+          {% endfor %}
+        </table>
+        </div>
+      </div>
+    </div>
   </div>
-        {% endverbatim %}
-{% if request.user.is_authenticated %}
-  <form action="/" method="post">
-    {% csrf_token %} 
-    {{ form }}
-    <input class="btn btn-primary" type="submit" value="Add Comment"/>
-  </form>
+  {% endfor %} <!-- response_q -->
 </div>
-{% endif %}
-{% endblock %}
-{% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="{% static "js/myvue.js" %}"></script>
 {% endblock %}
