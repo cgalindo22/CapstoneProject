@@ -11,7 +11,7 @@
       <div class="col-sm-6 text-black">
 
         <div class="px-5 ms-xl-4">
-          <span class="h1 fw-bold mb-0">DinnerPlan</span>
+          <span class="h1 fw-bold mb-0">DineOut</span>
         </div>
         
         <div class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-xl-n5">
@@ -25,12 +25,12 @@
                 {% if field.html_name == "password" %}
                   <div class="form-outline mb-4">
                   <label class="form-label">{{ field.label_tag }}</label>
-                    <input type="password" id="{{ field.id_for_label }}" class="form-control form-control-lg" name="{{ field.html_name }}" />
+                    <input type="password" required id="{{ field.id_for_label }}" class="form-control form-control-lg" name="{{ field.html_name }}" />
                   </div>
                 {% else %}
                   <div class="form-outline mb-4">
                     <label class="form-label">{{ field.label_tag }}</label>
-                    <input type="text" id="{{ field.id_for_label }}" class="form-control form-control-lg" name="{{ field.html_name }}" />
+                    <input type="text" required id="{{ field.id_for_label }}" class="form-control form-control-lg" name="{{ field.html_name }}" />
                   </div>
                 {% endif %}
               {% endfor %} 
@@ -58,7 +58,7 @@
       </div>
       <div class="col-sm-6 px-0 d-none d-sm-block">
         <div class=" gradient-custom-3">
-          <img src="{% static "images/login-image.jpg" %}" alt="Login image" class="w-100 vh-100 " style="object-fit: cover; object-position: left;">
+          <img src="{% static "images/login.jpg" %}" alt="Login image" class="w-100 vh-100 " style="object-fit: cover; object-position: left;">
         </div>
       </div>
       

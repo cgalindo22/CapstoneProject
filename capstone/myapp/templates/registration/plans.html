@@ -1,0 +1,94 @@
+{% extends "base.html" %} 
+{% load static %}
+
+{% block title %}Profile Page{% endblock title %}
+{% block content %}
+<div class="container">
+  <div class="main-body" style="padding-top: 20px;">
+    <div class="row gutters-sm">
+      <div class="col-md-4 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex flex-column align-items-center text-center">
+              {% if user.profile.avatar.url %}
+                <img src="{{ user.profile.avatar.url }}" alt="Admin" class="rounded-circle" width="150">
+              {% else %}
+              <img src="{% static "images/default_profile.jpeg" %}"  alt="Admin" class="rounded-circle" width="150">
+              {% endif %}
+              <div class="mt-3">
+                <h4>{{ user.first_name }} {{ user.last_name}}</h4>
+                <p class="text-secondary mb-1">{{ user.profile.bio }}</p>
+                <!-- <button class="btn btn-primary">Follow</button>
+                <button class="btn btn-outline-primary">Message</button> -->
+              </div>
+            </div>
+          </div>
+        </div> <!-- close card-->
+      </div>
+      <div class="col-md-8">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Full Name</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{ user.first_name }} {{ user.last_name }} 
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Username</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{ user.username }}
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Email</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{ user.email }}
+              </div>
+            </div>
+            <hr>
+          </div><!--card body-->
+        </div>
+        <div class="card mb-3">
+          <div class="card-body">
+            <h3 class="text-center">My Plans</h3>
+            <button class="btn btn-default btn-xs"><a href="/add_plan/" class="badge bg-success">Add Plan <i class="fa-solid fa-circle-plus"></i></a></button>
+            {% if user.is_authenticated %}
+              {% if plans %}
+                {% for plan in plans %}
+                  {% if user.username == plan.author %}
+                    <ul class="list-group">
+                      <li class="list-group-item">
+                        <ul class="list-unstyled">
+                          <li><strong>Title:</strong> {{ plan.title }} 
+                            <button class="btn btn-default btn-xs float-end">
+                            <a href="/delete_plan/{{ plan.id }}" class="badge badge-danger" >X</a>
+                          </button>
+                        </li>
+                          <li><strong>Place:</strong> {{ plan.name }}</li> 
+                          <li><strong>Date:</strong> {{ plan.date }}</li>
+                          <li><strong>Time:</strong> {{ plan.time }}</li>
+                          <li><strong>Number of Guests:</strong> {{ plan.guests }}</li>
+                        </ul>
+                      </li>
+                    </ul>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+<script src="{% static "js/script.js" %}"></script>

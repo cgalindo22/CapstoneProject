@@ -9,14 +9,12 @@
         <div class="col-12 text-center">
           <h1 class="text-light">Restaurants</h1>
           <p class="text-light">Find restaurant details below.</p>
-          <!-- <p class="lead">A great stakrter layout for a landing page</p> -->
         </div>
       </div>
     </div>  
   </div>
 </header>
-<div class="container-fluid">
-
+<div class="container-fluid"  style="padding-bottom: 56px">
   <h2 class="text-center"></h2>
   {% for i in response_q %}
   <div class="accordion" id="accordionExample">
@@ -34,28 +32,42 @@
       </div>
       <div id="collapse{{ forloop.counter }}" class="collapse" aria-labelledby="heading{{ forloop.counter }}" data-parent="#accordionExample">
         <div class="card-body">
-          
-          <p> <strong>Location:</strong>
-            {{ i.location.formatted_address }}
-            {% if i.display_phone.strip %}
-              <strong> Phone:</strong>
-                {{ i.display_phone }}
-            {% endif %}
-          </p>
-          <strong> Open:</strong>
-          <!-- Day of the week -->
-          
-          <!-- start open hours-->
-          <table>
-          {% for hr in i.hours %}
-            {% for open in hr.open %}
-              {% cycle '<tr>' '' %}
-                <td>{{ open.day }}</td>
-                <td>{{ open.start }} - {{ open.end }}</td>
-              {% cycle '</tr>' '' %}
-            {% endfor %}
-          {% endfor %}
-        </table>
+          <div class="row">
+            <div class="col">
+              <p> <strong>Location:</strong>
+              {{ i.location.formatted_address }}</p>
+              {% if i.display_phone.strip %}
+                <p><strong> Phone:</strong>
+                  {{ i.display_phone }}</p>
+              {% endif %}
+              <p><strong>Price:</strong> {{ i.price }}</p>
+              <p><strong>Rating:</strong> {{ i.rating }}</p>
+              <!-- {% for photo in i.photos %}
+              <p><img src="{{ photo }}" style="width: 200px;"/></p>
+              {% endfor %} -->
+            </div> <!-- col 1-->
+            <div class="col">
+             <!-- Table for hours-->
+             <table>
+              {% for hr in i.hours %} 
+                {% if hr.is_open_now %}
+                <strong><p style="color: rgb(8, 169, 99);">Open Now</p></strong>
+                {% else %}
+                <strong> <p style="color: rgb(255, 68, 68);">Closed</p></strong>
+                {% endif %}
+                {% for open in hr.open %}
+                  {% cycle '<tr>' '' %}
+                    <td>{{ open.day }}</td>
+                    <td>{{ open.start }} - {{ open.end }}</td>
+                  {% cycle '</tr>' '' %}
+                {% endfor %}
+              {% endfor %}
+            </table>
+            </div> <!-- col 2-->
+            <div class="col">
+
+            </div><!--col 3-->
+          </div>
         </div>
       </div>
     </div>

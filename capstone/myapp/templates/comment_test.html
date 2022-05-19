@@ -38,6 +38,9 @@
     </ul>
   </div>
         {% endverbatim %}
+  {% for com in comments %}
+    {{com.comment}} - {{com.author}}
+  {% endfor %}
 {% if request.user.is_authenticated %}
   <form action="/" method="post">
     {% csrf_token %} 

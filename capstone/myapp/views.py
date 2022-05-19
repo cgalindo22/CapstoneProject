@@ -1,120 +1,126 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import logout
+from django.views.generic import DetailView, CreateView
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views import generic
-from gql.transport.requests import RequestsHTTPTransport
-from gql import gql, Client
-from datetime import datetime
-import calendar
 import requests
+from datetime import datetime, date
 
 from . import models
 from . import forms
+from .ret_func import get_response
 
 
-# API constants
-API_HOST = 'https://api.yelp.com'
-SEARCH_PATH = '/v3/businesses/search'
-BUSINESS_PATH = '/v3/businesses/'  # Business ID will come after slash
-API_KEY = 'KXfzN0UTapfsP7jWc9wlPoKpMPsbKFq_7TfdmnD0Ym0GDxvQNFEagIgPVyIanjpgFuEs3FoMYKTeZLnBjT7G6QzYniRpsASPBiOP2Gh0jd3eUxKgXsVQCtqn5fUnYnYx' # YELP API Bearer key
 
 # home page-view
 def index(request):
-  HEADER = {'Authorization': 'bearer %s' % API_KEY}
-  # Build the request framework
-  transport = RequestsHTTPTransport(url='https://api.yelp.com/v3/graphql', headers=HEADER, use_json=True)
-  # Create the client
-  client = Client(transport=transport, fetch_schema_from_transport=True)
-  # define a simple query
-  query = gql(''' 
-  {
-    search(term:"downtown",
-         location:"Chico, 95928",
-  				categories:"restaurants") {
-      total
-      business {
-        name
-        hours {
-          is_open_now
-          open {
-            start
-            end
-            day
-          }
-        }
-        rating
-        price
-        location {
-          formatted_address
-        }
-        display_phone
-      }
-    }
-  }
-  ''')
-  response_q = client.execute(query)
-  for i in range(0,20):
-    # print(i)
-    if response_q['search']['business'][i]['hours']:
-      start_hours = response_q['search']['business'][i]['hours'][0]['open'] # change [] before start to have 1-4 or however many values
-      for c, start in enumerate(start_hours):
-        change_start = datetime.strptime(start['start'], '%H%M').strftime('%I:%M %p')
-        change_end = datetime.strptime(start['end'], '%H%M').strftime('%I:%M %p')
-        change_day = calendar.day_name[start['day']]
-        response_q['search']['business'][i]['hours'][0]['open'][c]['start'] = change_start
-        response_q['search']['business'][i]['hours'][0]['open'][c]['end'] = change_end
-        response_q['search']['business'][i]['hours'][0]['open'][c]['day'] = change_day
-  # testing 
-  # print(response_q['search']['business'][1]['hours'][0]['open'][0])
   context = {
-    'response_q':response_q['search']['business'][0:20],
+    'response_q':get_response(),
   }
   return render(request, 'index.html', context=context)
 
+class CreateProfile(CreateView):
+  model = models.Profile
+  form_class = forms.ProfilePageForm
+  template_name = 'registration/create_profile.html'
+
+  def form_valid(self, form):
+    form.instance.user = self.request.user
+    return super().form_valid(form)
+
+class ShowProfile(DetailView):
+  model = models.Profile
+  template_name = 'registration/profile.html'
+
+  def get_profile(self, *args, **kwargs):
+    users = model.Profile.objects.all()
+    context = super(ShowProfile, self).get_profile(*args, **kwargs)
+    page_user = get_object_or_404(Profile, id=self.kwargs['pk'])
+    context["page_user"] = page_user
+
+    return context
+
 class UserEditView(generic.UpdateView):
+  form_class = forms.UpdateUserForm
+  template_name = 'registration/edit_settings.html'
+  success_url = reverse_lazy('plans')
+
+  def get_object(self):
+    return self.request.user
+
+class EditProfileView(generic.UpdateView):
   form_class = forms.UpdateProfileForm
+  # fields = ['avatar', 'bio']
   template_name = 'registration/edit_profile.html'
-  success_url = reverse_lazy('profile')
+  success_url = reverse_lazy('plans')
 
   def get_object(self):
     return self.request.user
 
 @login_required
-def profile(request):
-  # if request.method == 'POST':
-  #   user_form = forms.UpdateUserForm(request.POST, instance=request.user)
-  #   profile_form = forms.UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
-
-  #   if user_form.is_valid() and profile_form.is_valid():
-  #     user_form.save()
-  #     profile_form.save()
-  #     messages.success(request, 'Your profile is updated successfully')
-  #     return redirect(to='users-profile')
-  # else:
-  #     user_form = forms.UpdateUserForm(instance=request.user)
-  #     profile_form = forms.UpdateProfileForm(instance=request.user.profile)
+def add_plan(request):
+  if not request.user.is_authenticated:
+    return redirect("/login/")
+  if request.method == "POST":
+    plan_form = forms.PlanForm(request.POST)
+    if plan_form.is_valid():
+      plan_form.save(request)
+      return redirect("/plans/")      
+  else:
+    plan_form = forms.PlanForm()
 
   context = {
-    # 'user_form': user_form, 
-    # 'profile_form': profile_form
-    }
+    'title':'Plan',
+    'response_q':get_response(),
+    'form':plan_form,
+  }
+  return render(request, 'add_plan.html', context=context)
 
-  return render(request, 'profile.html', context=context)
+def delete_plan(request, plan_id):
+  plan = models.Plan.objects.filter(id=plan_id).delete()
+  return redirect("/plans/")
+
+@login_required
+def plan_view(request):
+  if request.method == "POST":
+    if request.user.is_authenticated:
+      plan_form = forms.PlanForm(request.POST)
+      if plan_form.is_valid():
+        plan_form.save(request)
+        plan_form = forms.PlanForm()
+  else:
+    plan_form = forms.PlanForm()
+
+  plan_objects = models.Plan.objects.all().order_by('date')
+  plan_list =  []
+  for plan in plan_objects:
+    tmp_plan = {}
+    tmp_plan["name"] = plan.name
+    tmp_plan["title"] =  plan.title
+    tmp_plan["date"] =  plan.date
+    tmp_plan["time"] = plan.time
+    tmp_plan["guests"] =  plan.guests
+    tmp_plan["author"] = plan.author.username
+    tmp_plan["id"] = plan.id
+    plan_list+=[tmp_plan]
+
+  context = {
+      'plans':plan_list
+    }
+  return render(request, 'registration/plans.html', context=context)
 
 def logout_view(request):
   logout(request)
   return redirect("/login/")
 
-
 def register(request):
   if request.method == "POST":
     form_instance = forms.RegForm(request.POST)
     if form_instance.is_valid():
-      # form_instance.save()
       user = form_instance.save()
       return redirect("/login/")
   else:

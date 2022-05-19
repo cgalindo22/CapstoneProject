@@ -9,7 +9,11 @@ urlpatterns = [
   path('logout/', views.logout_view),
   path('comments/', views.get_comments),
   path('test/', views.comment_test),
-  path('profile/', views.profile, name='profile'),
-  path('edit_profile/', views.UserEditView.as_view()),
-  #path('/nextpage', views.nextpage)
+  path('plans/', views.plan_view, name='plans'),
+  path('settings/', views.UserEditView.as_view(), name='edit-settings'),
+  path('<int:pk>/profile/', views.ShowProfile.as_view(), name='showprofile'),
+  path('<int:pk>/edit_profile/', views.EditProfileView.as_view(), name="edit-profile"),
+  path('create_profile/', views.CreateProfile.as_view(), name="create-profile"),
+  path('add_plan/', views.add_plan),
+  path('delete_plan/<int:plan_id>', views.delete_plan, name='delete-plan'),
 ]

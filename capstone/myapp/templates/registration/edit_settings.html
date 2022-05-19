@@ -30,7 +30,7 @@
           <div class="card-body">
             <div class="row mb-3">
               <div class="form-group">
-                <form method="post" action="/plans/" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data">
                 {% csrf_token %} 
                 {{ form.errors }}
                 {{ form|crispy }}

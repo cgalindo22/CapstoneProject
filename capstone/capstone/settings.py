@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-pm0az%-ck@glkexl##4cj#jmxljt^*#8fzdw3&)x$b@1z77tza
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["www.dineoutnearme.net", "dineoutnearme.net", "35.206.75.148"]
 
 LOGIN_REDIRECT_URL="/"
 LOGIN_URL="/login/"
@@ -158,8 +158,6 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 SITE_ID = 2
 
-LOGIN_REDIRECT_URL = '/'
-
 LOGOUT_REDIRECT_URL = '/login/'
 
 SOCIALACCOUNT_QUERY_EMAIL = True
@@ -171,6 +169,7 @@ ACCOUNT_SESSION_REMEBER = False
 # stops the extra page "you are about to use a third-patry "continue" 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
-
-
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# for google maps
+GOOGLE_API_KEY = "AIzaSyBFFYehMjvY9-PEk7Pz8KkkKYV4C3pBNqU"

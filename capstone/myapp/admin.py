@@ -5,4 +5,5 @@ from . import models
 admin.site.register(models.CommentModel)
 admin.site.register(models.ReplyModel)
 admin.site.register(models.Profile)
+admin.site.register(models.Plan)
 # admin.site.register(models.RestaurantModels)

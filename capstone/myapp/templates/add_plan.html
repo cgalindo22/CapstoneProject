@@ -1,0 +1,81 @@
+{% extends "base.html" %} 
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+
+<section class="vh-100 back-plan">
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+          <div class="card" style="border-radius: 15px">
+            <div class="card-body p-5">
+              <h2 class="text-uppercase text-center mb-5">Create A Plan</h2>
+              <div class="form-outline mb-4">
+                <form action="/plans/" method="post">
+                  {% csrf_token %}
+                  <div class="mb-3 row">
+                   {{ form.errors }}
+                  {% for field in form %}
+                    {% if field.html_name == "name" %}
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-utensils fa-lg me-3 fa-fw"></i>
+                      <i class="fa-solid fa-fork-knife"></i>
+                      <div class="form-outline flex-fill mb-0">
+                        <select class="form-select" name="{{ field.name }}" required id="{{field.id_for_label}}">
+                        {% for value in field %}
+                           {{ value }}
+                        {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+                    {% elif field.html_name == 'title' %}
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-pen fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline flex-fill mb-0">
+                        <input type="text" required id="{{ field.id_for_label }}" class="form-control form-control-lg" name="{{ field.html_name }}" placeholder="{{ field.label }}"/>
+                      </div>
+                    </div>
+                    {% elif field.html_name == 'date' %}
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-calendar fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline flex-fill mb-0">
+                        <input type="date" required id="{{ field.id_for_label }}" class="form-control form-control-lg" name="{{ field.html_name }}" placeholder="{{ field.label }}"/>
+                      </div>
+                    </div>
+                    {% elif field.html_name == 'time' %}
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-clock fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline flex-fill mb-0">
+                        <input type="time" required id="{{ field.id_for_label }}" class="form-control form-control-lg" name="{{ field.html_name }}" placeholder="{{ field.label }}"/>
+                      </div>
+                    </div>
+                    {% elif field.html_name == "guests" %}
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-users fa-lg me-3 fa-fw"></i>
+                      <i class="fa-solid fa-fork-knife"></i>
+                      <div class="form-outline flex-fill mb-0">
+                        <select class="form-select" name="{{ field.name }}" required id="{{field.id_for_label}}">
+                        {% for value in field %}
+                           {{ value }}
+                        {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+                    {% endif %}
+                  {% endfor %}
+                  </div>
+                  <div class="d-flex justify-content-center">
+                    <input type="submit" class="btn btn-info btn-lg btn-block" value="Create" />
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
