@@ -7,4 +7,4 @@ DineOut is a web application that allows users to easily see restaurant details 
 ### Dependencies 
 All items needed to run this app are listed in 'requirements.txt
 
-![Capstone Poster](cgalindosandoval_cins_poster.pdf)
+![Capstone Poster](CapstoneProject/cgalindosandoval_cins_poster.pdf)
